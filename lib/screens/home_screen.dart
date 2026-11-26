@@ -297,7 +297,6 @@ class _HomeScreenState extends State<HomeScreen> {
               controller.close();
             });
           },
-          // ITT NYÍLIK MEG A KÁRTYÁRA KATTINTVA A RÉSZLETES NÉZET
           child: InkWell(
             onTap: () async {
               final modifiedEntry = await Navigator.push<Entry>(
