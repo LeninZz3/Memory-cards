@@ -15,6 +15,7 @@ class _EditEntryScreenState extends State<EditEntryScreen> {
   late TextEditingController _textController;
   late TextEditingController _tagsController;
   late DateTime _selectedDate;
+  late bool _isPinned;
 
   @override
   void initState() {
@@ -23,6 +24,7 @@ class _EditEntryScreenState extends State<EditEntryScreen> {
     _textController = TextEditingController(text: widget.entry.text);
     _tagsController = TextEditingController(text: widget.entry.tags.join(', '));
     _selectedDate = widget.entry.date;
+    _isPinned = widget.entry.isPinned;
   }
 
   @override
@@ -33,7 +35,6 @@ class _EditEntryScreenState extends State<EditEntryScreen> {
     super.dispose();
   }
 
-  // Dátumválasztó dialógus megnyitása
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -59,13 +60,12 @@ class _EditEntryScreenState extends State<EditEntryScreen> {
         .where((tag) => tag.isNotEmpty)
         .toList();
 
-
-    final updatedEntry = Entry(
-      id: widget.entry.id,
+    final updatedEntry = widget.entry.copyWith(
       title: _titleController.text,
       text: _textController.text,
       date: _selectedDate,
       tags: tagsList,
+      isPinned: _isPinned,
     );
 
     Navigator.pop(context, updatedEntry);
@@ -115,7 +115,6 @@ class _EditEntryScreenState extends State<EditEntryScreen> {
             ),
             const SizedBox(height: 16),
 
-
             TextField(
               controller: _tagsController,
               decoration: const InputDecoration(
@@ -123,6 +122,19 @@ class _EditEntryScreenState extends State<EditEntryScreen> {
                 hintText: 'e.g. work, flutter, idea',
                 border: OutlineInputBorder(),
               ),
+            ),
+            const SizedBox(height: 16),
+
+            SwitchListTile(
+              title: const Text('Pin to top'),
+              subtitle: const Text('Keep this memory at the top of the list'),
+              value: _isPinned,
+              activeThumbColor: Colors.amber,
+              onChanged: (value) {
+                setState(() {
+                  _isPinned = value;
+                });
+              },
             ),
             const SizedBox(height: 16),
 

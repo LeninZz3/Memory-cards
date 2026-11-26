@@ -58,7 +58,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Cím
               Text(
                 _currentEntry.title,
                 style: theme.textTheme.headlineSmall?.copyWith(
@@ -68,7 +67,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
               ),
               const SizedBox(height: 8),
 
-              // Dátum
               Text(
                 _currentEntry.date.toString().split(' ')[0],
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -77,7 +75,6 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Tagek (címkék)
               if (_currentEntry.tags.isNotEmpty) ...[
                 Wrap(
                   spacing: 8.0,

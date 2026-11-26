@@ -13,12 +13,14 @@ class Entry {
   // The date the student assigns to this memory (not necessarily today).
   final DateTime date;
 
-  // Categories/labels for the entry — added in Stage 4.
+  // Categories/labels for the entry.
   final List<String> tags;
 
-  // File path of an attached photo — added in Stage 5 (Track A).
-  // null means no photo is attached.
+  // File path of an attached photo.
   final String? imagePath;
+
+  // Whether the entry is pinned to the top of the list.
+  final bool isPinned;
 
   const Entry({
     required this.id,
@@ -27,12 +29,10 @@ class Entry {
     required this.date,
     this.tags = const [],
     this.imagePath,
+    this.isPinned = false,
   });
 
   // --- Serialization ---
-  // toJson / fromJson let us save and load entries from storage (Stage 3).
-  // We write them manually so every line is readable — no code generation magic.
-
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -41,6 +41,7 @@ class Entry {
       'date': date.toIso8601String(), // e.g. "2025-09-01T00:00:00.000"
       'tags': tags,
       'imagePath': imagePath,
+      'isPinned': isPinned,
     };
   }
 
@@ -52,11 +53,11 @@ class Entry {
       date: DateTime.parse(json['date'] as String),
       tags: List<String>.from(json['tags'] as List? ?? []),
       imagePath: json['imagePath'] as String?,
+      isPinned: json['isPinned'] as bool? ?? false,
     );
   }
 
   // copyWith lets you create a modified copy of an entry (useful for editing).
-  // e.g.  entry.copyWith(title: 'New title')
   Entry copyWith({
     String? id,
     String? title,
@@ -64,6 +65,7 @@ class Entry {
     DateTime? date,
     List<String>? tags,
     String? imagePath,
+    bool? isPinned,
   }) {
     return Entry(
       id: id ?? this.id,
@@ -72,6 +74,7 @@ class Entry {
       date: date ?? this.date,
       tags: tags ?? this.tags,
       imagePath: imagePath ?? this.imagePath,
+      isPinned: isPinned ?? this.isPinned,
     );
   }
 }

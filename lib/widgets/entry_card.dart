@@ -53,90 +53,117 @@ class EntryCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 3,
-                  color: isDark ? Colors.purpleAccent : Colors.deepPurple,
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: TextHighlight(
-                      text: entry.title,
-                      words: highlights,
-                      textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.purple.shade200 : Colors.deepPurple,
-                        fontSize: 20,
-                        letterSpacing: 1.5,
-                      ) ??
-                          const TextStyle(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 3,
+                      color: isDark ? Colors.purpleAccent : Colors.deepPurple,
                     ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(
-                  Icons.auto_stories,
-                  size: 16,
-                  color: isDark ? Colors.grey.shade400 : Colors.grey,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  DateFormat('EEEE, d MMMM yyyy').format(entry.date),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: isDark ? Colors.grey.shade400 : Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            entry.text.trim().isEmpty
-                ? Text(
-              'No description',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: isDark ? Colors.grey.shade500 : Colors.grey,
-                fontStyle: FontStyle.italic,
-              ),
-            )
-                : TextHighlight(
-              text: entry.text,
-              words: highlights,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: isDark ? Colors.grey.shade200 : Colors.black87,
-              ) ??
-                  const TextStyle(),
-            ),
-            if (entry.tags.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 4,
-                runSpacing: 4,
-                children: entry.tags.map((tag) {
-                  return Chip(
-                    label: Text(
-                      tag,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isDark ? Colors.white : Colors.black87,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: TextHighlight(
+                          text: entry.title,
+                          words: highlights,
+                          textStyle: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isDark
+                                ? Colors.purple.shade200
+                                : Colors.deepPurple,
+                            fontSize: 20,
+                            letterSpacing: 1.5,
+                          ) ??
+                              const TextStyle(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
-                    backgroundColor: _tagColor(tag).withValues(alpha: isDark ? 0.35 : 0.2),
-                    side: BorderSide(color: _tagColor(tag)),
-                    padding: EdgeInsets.zero,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  );
-                }).toList(),
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.auto_stories,
+                      size: 16,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      DateFormat('EEEE, d MMMM yyyy').format(entry.date),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: isDark ? Colors.grey.shade400 : Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                entry.text.trim().isEmpty
+                    ? Text(
+                  'No description',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: isDark ? Colors.grey.shade500 : Colors.grey,
+                    fontStyle: FontStyle.italic,
+                  ),
+                )
+                    : TextHighlight(
+                  text: entry.text,
+                  words: highlights,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  textStyle: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(
+                    color: isDark
+                        ? Colors.grey.shade200
+                        : Colors.black87,
+                  ) ??
+                      const TextStyle(),
+                ),
+                if (entry.tags.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: entry.tags.map((tag) {
+                      return Chip(
+                        label: Text(
+                          tag,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                        backgroundColor:
+                        _tagColor(tag).withValues(alpha: isDark ? 0.35 : 0.2),
+                        side: BorderSide(color: _tagColor(tag)),
+                        padding: EdgeInsets.zero,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      );
+                    }).toList(),
+                  ),
+                ],
+                const SizedBox(height: 16),
+              ],
+            ),
+
+            if (entry.isPinned)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Icon(
+                  Icons.push_pin,
+                  size: 18,
+                  color: Colors.amber.shade700,
+                ),
               ),
-            ],
           ],
         ),
       ),

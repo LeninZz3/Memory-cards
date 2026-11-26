@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/entry.dart';
 import '../widgets/entry_card.dart';
 import 'create_entry_screen.dart';
-import '../screens/detailed_entry_screen.dart'; // <-- A részletes olvasó nézet importálása
+import '../screens/detailed_entry_screen.dart';
 import '../utils/storage.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,13 +23,27 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Entry> _entries = [];
   String _searchQuery = '';
 
+
+  void _sortEntries(List<Entry> list) {
+    list.sort((a, b) {
+      if (a.isPinned != b.isPinned) {
+        return a.isPinned ? -1 : 1;
+      }
+      return b.date.compareTo(a.date);
+    });
+  }
+
   List<Entry> get _filteredEntries {
-    if (_searchQuery.isEmpty) return _entries;
-    final query = _searchQuery.toLowerCase();
-    return _entries.where((entry) {
-      return entry.title.toLowerCase().contains(query) ||
-          entry.text.toLowerCase().contains(query);
-    }).toList();
+    List<Entry> result = _entries;
+    if (_searchQuery.isNotEmpty) {
+      final query = _searchQuery.toLowerCase();
+      result = _entries.where((entry) {
+        return entry.title.toLowerCase().contains(query) ||
+            entry.text.toLowerCase().contains(query);
+      }).toList();
+    }
+    _sortEntries(result);
+    return result;
   }
 
   @override
@@ -42,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final loaded = await loadEntries();
     setState(() {
       _entries = loaded;
+      _sortEntries(_entries);
     });
   }
 
@@ -55,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (newEntry != null) {
       setState(() {
         _entries.insert(0, newEntry);
+        _sortEntries(_entries);
       });
       saveEntries(_entries);
     }
@@ -286,6 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     setState(() {
                       _entries.insert(deletedIndex, deletedEntry);
+                      _sortEntries(_entries);
                     });
                     saveEntries(_entries);
                   },
@@ -308,10 +325,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
               if (modifiedEntry != null) {
                 setState(() {
-                  final entryIndex = _entries.indexWhere((e) => e.id == modifiedEntry.id);
+                  final entryIndex =
+                  _entries.indexWhere((e) => e.id == modifiedEntry.id);
                   if (entryIndex != -1) {
                     _entries[entryIndex] = modifiedEntry;
                   }
+                  _sortEntries(_entries);
                 });
                 saveEntries(_entries);
               }
