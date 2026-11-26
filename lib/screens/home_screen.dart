@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/entry.dart';
 import '../widgets/entry_card.dart';
 import 'create_entry_screen.dart';
+import '../screens/detailed_entry_screen.dart'; // <-- A részletes olvasó nézet importálása
 import '../utils/storage.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -296,9 +297,30 @@ class _HomeScreenState extends State<HomeScreen> {
               controller.close();
             });
           },
-          child: EntryCard(
-            entry: entry,
-            searchQuery: _searchQuery,
+          // ITT NYÍLIK MEG A KÁRTYÁRA KATTINTVA A RÉSZLETES NÉZET
+          child: InkWell(
+            onTap: () async {
+              final modifiedEntry = await Navigator.push<Entry>(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EntryDetailScreen(entry: entry),
+                ),
+              );
+
+              if (modifiedEntry != null) {
+                setState(() {
+                  final entryIndex = _entries.indexWhere((e) => e.id == modifiedEntry.id);
+                  if (entryIndex != -1) {
+                    _entries[entryIndex] = modifiedEntry;
+                  }
+                });
+                saveEntries(_entries);
+              }
+            },
+            child: EntryCard(
+              entry: entry,
+              searchQuery: _searchQuery,
+            ),
           ),
         );
       },
